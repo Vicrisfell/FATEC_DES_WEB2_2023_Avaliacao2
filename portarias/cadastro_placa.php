@@ -5,17 +5,42 @@
 
     $aluno = $_POST['aluno'];
     $placa = $_POST['placa'];
-/*
-    if(strlen($aluno) > 10 ){
-        header("location: cadastro.php");
+    $conn = null;
+
+if (!isset($_SESSION["online"]) || $_SESSION["online"] !== true) {
+    header("Location: index.php");
+    exit();
+}
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $aluno = $_POST['aluno'];
+    $placa = $_POST['placa'];
+
+    try {
+        $dsn = "mysql:host=$servername;dbname=$dbname";
+        $conn = new PDO($dsn, $username, $password);
+        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+        $sql = "INSERT INTO veiculos (aluno, placa) VALUES (:aluno, :placa)";
+
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':aluno', $aluno, PDO::PARAM_STR);
+        $stmt->bindParam(':placa', $placa, PDO::PARAM_STR);
+        $stmt->execute();
+    } catch (PDOException $e) {
+        echo $sql . "<br>" . $e->getMessage();
     }
-*/
-    /*
-    SEU CÓDIGO AQUI
-    Para conectar ao SGBD MySQL, inserir dados
-    na tabela veículos.
-    */
+    echo "cadastro com sucesso";
+
+    $conn = null;
+
+    header("Location: cadastro.php");
+    exit();
+
+}
+
 ?>
+
  
 <!DOCTYPE html>
 <html lang="pt_BR">
